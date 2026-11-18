@@ -120,9 +120,55 @@ test('Chrome extension: review discovery, updates, navigation and collapse', asy
     await page.locator('[data-id="a"]').evaluate(el => el.style.display = '');
     await toc.locator('.entry[data-note-id="followup"]').waitFor();
 
+    const header = toc.locator('#toggle');
+    async function dragHeader(x, y) {
+      const rect = await header.boundingBox();
+      await page.mouse.move(rect.x + 100, rect.y + 20);
+      await page.mouse.down();
+      await page.mouse.move(x, y, { steps: 5 });
+      await page.mouse.up();
+    }
+    await dragHeader(140, 100);
+    let moved = await toc.boundingBox();
+    assert.ok(Math.abs(moved.x - 40) < 2 && Math.abs(moved.y - 80) < 2);
+    assert.equal(await header.getAttribute('aria-expanded'), 'true');
+
+    // Touch uses the same drag handle without scrolling the page or toggling it.
+    const session = await context.newCDPSession(page);
+    const scrollBeforeTouch = await page.evaluate(() => scrollY);
+    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 140, y: 100 }] });
+    await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 220, y: 160 }] });
+    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    moved = await toc.boundingBox();
+    assert.ok(Math.abs(moved.x - 120) < 2 && Math.abs(moved.y - 140) < 2);
+    assert.equal(await page.evaluate(() => scrollY), scrollBeforeTouch);
+    assert.equal(await header.getAttribute('aria-expanded'), 'true');
+    await session.detach();
+
+    await header.focus();
+    await page.keyboard.press('ArrowRight');
+    assert.ok(Math.abs((await toc.boundingBox()).x - 130) < 2);
+    await page.keyboard.press('Enter');
+    assert.equal(await toc.locator('#body').isVisible(), false);
+    await header.click();
+    assert.equal(await toc.locator('#body').isVisible(), true);
+
+    await dragHeader(-500, -500);
+    moved = await toc.boundingBox();
+    assert.equal(moved.x, 8);
+    assert.equal(moved.y, 8);
+    await header.click();
+    await dragHeader(3000, 3000);
+    moved = await toc.boundingBox();
+    assert.ok(moved.x + moved.width <= 1440 && moved.y + moved.height <= 900);
+    await header.click();
+    await page.waitForFunction(() => document.querySelector('#openreview-reviewer-toc').getBoundingClientRect().bottom <= innerHeight - 8);
+
     await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForFunction(() => document.querySelector('#openreview-reviewer-toc').getBoundingClientRect().right <= innerWidth - 8);
     const bounds = await toc.boundingBox();
     assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= 390);
+    assert.ok(bounds.y >= 0 && bounds.y + bounds.height <= 844);
     fs.mkdirSync(path.join(extension, 'test-results'), { recursive: true });
     await page.screenshot({ path: path.join(extension, 'test-results/mobile.png') });
     await page.setViewportSize({ width: 1440, height: 900 });

@@ -10,10 +10,13 @@
       :host([hidden]) { display: none; }
       * { box-sizing: border-box; }
       nav { background: #fff; border: 1px solid #dce5df; border-radius: 12px;
-        box-shadow: 0 5px 24px #172e1f14; overflow: hidden; }
+        box-shadow: 0 5px 24px #172e1f14; overflow: hidden; display: flex;
+        flex-direction: column; max-height: calc(100vh - 16px); }
       button { font: inherit; cursor: pointer; }
       #toggle { width: 100%; display: flex; align-items: center; gap: 8px; padding: 14px;
-        border: 0; background: #f5f8f6; color: inherit; text-align: left; }
+        border: 0; background: #f5f8f6; color: inherit; text-align: left;
+        cursor: grab; touch-action: none; user-select: none; flex-shrink: 0; }
+      #toggle:active { cursor: grabbing; }
       #count { color: #66766c; font-size: 12px; }
       #chevron { margin-left: auto; }
       #body { max-height: calc(100vh - 210px); overflow-y: auto; padding: 8px; }
@@ -34,7 +37,8 @@
       @media print { :host { display: none; } }
     </style>
     <nav aria-label="审稿人目录">
-      <button id="toggle" type="button" aria-expanded="true" aria-controls="body">
+      <button id="toggle" type="button" aria-expanded="true" aria-controls="body"
+        title="拖动调整位置，点击折叠；聚焦后可用方向键移动">
         <strong>审稿人目录</strong><span id="count"></span><span id="chevron" aria-hidden="true">−</span>
       </button>
       <div id="body"><ol></ol><p id="empty">暂无已加载的评审；请等待页面加载或检查筛选条件。</p></div>
@@ -43,7 +47,65 @@
   const toggle = root.querySelector('#toggle');
   const body = root.querySelector('#body');
   const list = root.querySelector('ol');
-  toggle.addEventListener('click', () => {
+  let drag;
+  let suppressClick = false;
+
+  function moveTo(x, y) {
+    const bounds = host.getBoundingClientRect();
+    Object.assign(host.style, {
+      left: `${Math.max(8, Math.min(x, innerWidth - bounds.width - 8))}px`,
+      top: `${Math.max(8, Math.min(y, innerHeight - bounds.height - 8))}px`,
+      right: 'auto', bottom: 'auto',
+    });
+  }
+
+  function keepInView() {
+    if (host.hidden || !host.style.left) return;
+    const bounds = host.getBoundingClientRect();
+    moveTo(bounds.left, bounds.top);
+  }
+
+  toggle.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    const bounds = host.getBoundingClientRect();
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
+      left: bounds.left, top: bounds.top, moved: false };
+    suppressClick = false;
+    toggle.setPointerCapture(event.pointerId);
+  });
+  toggle.addEventListener('pointermove', event => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+    drag.moved = true;
+    moveTo(drag.left + dx, drag.top + dy);
+  });
+  function endDrag(event) {
+    if (!drag || event.pointerId !== drag.id) return;
+    suppressClick = drag.moved;
+    drag = null;
+    if (toggle.hasPointerCapture(event.pointerId)) toggle.releasePointerCapture(event.pointerId);
+  }
+  toggle.addEventListener('pointerup', endDrag);
+  toggle.addEventListener('pointercancel', endDrag);
+  toggle.addEventListener('lostpointercapture', endDrag);
+  toggle.addEventListener('keydown', event => {
+    const direction = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[event.key];
+    if (!direction) return;
+    event.preventDefault();
+    const bounds = host.getBoundingClientRect();
+    moveTo(bounds.left + direction[0], bounds.top + direction[1]);
+  });
+  window.addEventListener('resize', keepInView);
+  new ResizeObserver(keepInView).observe(host);
+
+  toggle.addEventListener('click', event => {
+    // A drag also generates a click; it must not collapse the panel.
+    if (suppressClick && event.detail !== 0) {
+      suppressClick = false;
+      return;
+    }
     body.hidden = !body.hidden;
     toggle.setAttribute('aria-expanded', String(!body.hidden));
     root.querySelector('#chevron').textContent = body.hidden ? '+' : '−';
