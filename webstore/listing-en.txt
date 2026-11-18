@@ -1,0 +1,19 @@
+OpenReview Reviewer TOC adds a draggable table of contents to OpenReview paper discussions. Find a reviewer, follow the replies, and jump to the exact comment you want to read.
+
+• See reviewers and their loaded discussion replies in a nested outline.
+• Read each reply's author and title directly in the sidebar.
+• Click an entry to expand its discussion and jump to it.
+• Drag the header to move the sidebar, or click it to collapse the outline.
+• Use the arrow keys to move the sidebar when its header is focused.
+• Keep the outline updated as OpenReview loads or rearranges notes.
+
+The extension reads the current OpenReview page URL and displayed discussion metadata locally to provide navigation. Names, aliases, and reply titles stay in your browser. No data is sent to the developer or other services; there are no analytics, ads, or remote code.
+
+Getting started: install the extension, open or refresh an OpenReview paper page with visible reviews, and use the sidebar. The extension has no separate login. OpenReview may require its own sign-in or browser verification to display a discussion.
+
+Only loaded reviews and their discussion replies are listed. Use OpenReview's filters and “View More Replies” controls to display missing content. Sidebar position resets after a page reload. The sidebar controls are currently in Simplified Chinese; reviewer names and reply titles keep their original language.
+
+This is an independent extension, not affiliated with or endorsed by OpenReview. Store screenshots use demonstration discussion content with the actual extension interface.
+
+Support: https://github.com/chansigit/openreview-toc/issues
+Privacy: https://github.com/chansigit/openreview-toc/blob/master/PRIVACY.md

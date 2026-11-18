@@ -12,7 +12,7 @@ A Chrome extension that adds a sidebar for reviewers and every reply in their di
 2. Open `chrome://extensions` and enable **Developer mode**.
 3. Click **Load unpacked**, select the folder containing `manifest.json`, and refresh your OpenReview paper page.
 
-Only reads the current page; no uploads or API requests. Lists loaded reviews and their replies. Load more replies on OpenReview if any are missing.
+Only reads the current page; no uploads or API requests. Lists loaded reviews and their replies. Load more replies on OpenReview if any are missing. [Privacy policy](PRIVACY.md).
 
 ## 中文
 

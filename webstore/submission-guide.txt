@@ -1,0 +1,99 @@
+OpenReview Reviewer TOC — Chrome Web Store 填写资料
+对应版本：1.2.0
+核对日期：2026-11-17
+
+1. 上传文件
+
+New item / Package：openreview-toc-webstore.zip
+Store icon：icon-128.png（128×128 PNG）
+Screenshot：screenshot-1280x800.png（1280×800 PNG）
+Small promo tile：promo-440x280.png（440×280 PNG，可选）
+
+截图是实际扩展在演示讨论页上的截图，画面及描述均已注明 Demo。
+不要把整个“资料包 ZIP”当成扩展安装包上传；New item 只选 openreview-toc-webstore.zip。
+
+2. Store listing
+
+名称（由 manifest 提供）：
+OpenReview Reviewer TOC
+
+简短描述（当前 manifest 已提供，不需要另行修改包）：
+在 OpenReview 论文页面显示审稿人及每条讨论回复的目录，点击跳转到对应内容。
+
+英文短描述备用（若以后修改英文 manifest 可使用，当前包不会自动变成此文本）：
+Navigate OpenReview reviewers and discussion replies with a draggable, nested table of contents.
+
+Detailed description：复制 listing-en.txt 或 listing-zh-CN.txt 的全文。
+如需要同一段包含双语，可先粘贴英文，再空行粘贴中文。当前包没有 _locales，不假定后台提供多语言分栏。
+
+Category 建议：Workflow & Planning
+Language 建议：Chinese (Simplified)，当前侧栏控件是中文；英文介绍已明确这一点。
+
+Homepage URL：
+https://github.com/chansigit/openreview-toc
+
+Support URL：
+https://github.com/chansigit/openreview-toc/issues
+
+Privacy policy URL：
+https://github.com/chansigit/openreview-toc/blob/master/PRIVACY.md
+
+Official URL / 已验证网站：没有已验证域名时留空，不必为本项目填写。
+
+3. Privacy practices
+
+Single purpose description（直接复制）：
+Provide an in-page table of contents for OpenReview reviews and their discussion replies, so users can navigate to a reviewer or reply within the current paper discussion.
+
+Host permission justification（针对 https://openreview.net/*，直接复制）：
+The content script runs only on https://openreview.net/. It reads the current page URL and, on paper forum pages, the displayed review and reply metadata needed to build the navigation outline. It inserts the sidebar and expands or scrolls to an existing note when the user selects an entry. Domain-wide matching supports OpenReview's client-side navigation into forum pages; the sidebar is only shown on /forum pages with a paper id. No page data is transmitted, and no other sites are accessed.
+
+其他 API 权限：当前 manifest 没有声明额外的 permissions 或 optional_permissions，不需要虚构用途。
+
+Remote code：选择 No, I am not using remote code。
+说明（如后台要求，直接复制）：
+All executable code is included in the extension package. The extension does not load or execute remote scripts, use eval, or make network/API requests. Reading the existing OpenReview page DOM does not execute downloaded code.
+
+Data usage：不要填写“完全不处理用户数据”。Google 要求披露本地处理。
+以下是按当前代码和官方定义建议披露的类别映射，不表示数据会上传：
+
+• Website content：用于目录的评审类型、条目标识符、署名、回复标题及层级关系。
+• Personally identifiable information：页面已经显示的姓名或用户名；很多评审显示的是匿名代号。
+• Personal communications：评审讨论的发言者和回复标题，包括用户本来有权查看的非公开讨论元数据；不读取邮箱、短信或其他网站。
+• Web history：仅检查当前 OpenReview 页面 URL 和论文 ID，以判断是否启用目录；不读取浏览器历史数据库、不保留访问列表。
+
+此映射是对该实现的判断。若后台的字段定义变动，按实际处理内容核对；不能因为“不上传”就省略上述本地用途。
+不声明支付、健康、身份验证、位置数据；不记录 User activity 行为分析或日志。鼠标、触屏和按键事件仅操作本地界面。
+
+数据处理补充说明（有说明栏时可复制）：
+Discussion metadata and the current OpenReview URL are processed only in the current page and temporary memory to build and operate the table of contents. Displayed names/aliases and reply titles may include personal information or private discussion metadata already visible to the user. Nothing is sent to the developer or third parties, persisted in browser storage, sold, or used for advertising or analytics. No browser history database, passwords, or authentication cookies are accessed. Closing or reloading the page clears temporary state.
+
+三项数据使用认证与当前实现一致，可核对后勾选：
+• 不出售或转移数据给第三方（本插件不传输页面数据）。
+• 不将数据用于与核心功能无关的目的。
+• 不将数据用于信用评估或贷款。
+
+4. Test instructions（可复制下面的英文）
+
+Install the uploaded package and open an OpenReview paper forum with loaded reviews. Example: https://openreview.net/forum?id=ocWZ3aKdos (Let's Try Again: Eliciting Multi-Turn Reasoning in Language Models via Simplistic Feedback). If that paper is unavailable or its venue restricts access, select another publicly accessible paper discussion from https://openreview.net/. The extension does not have its own account or require developer credentials. OpenReview itself may display a browser-verification page or request sign-in; complete that site's normal access flow first.
+
+Once the paper's reviews have loaded, find the floating sidebar headed “审稿人目录” (reviewer table of contents). Reviewers appear at the top level, with each loaded reply nested below its parent and labeled by author and title. Click a reviewer or a reply: its discussion should expand as needed, scroll into view, and briefly highlight.
+
+Drag the sidebar header to reposition it. Releasing a drag should not collapse the sidebar. Click the header without dragging to collapse/expand it. Focus the header and use arrow keys to move it. Resize the window: a moved sidebar should stay within the viewport. Reloading the page resets its position.
+
+Use OpenReview's filters or “View More Replies” controls to change the loaded notes; the outline should update. Only loaded reviews and their discussion descendants appear. Standalone comments and meta reviews are excluded. Initially collapsed reviews with custom titles may need to be expanded in OpenReview before the extension can recognize them. The sidebar controls are in Simplified Chinese; note titles and signatures retain their original language.
+
+The store screenshot uses demonstration discussion content rendered with the actual extension. It is not a live paper URL. Source and browser integration tests are available at https://github.com/chansigit/openreview-toc. Automated tests cover Chromium loading and interaction against representative page fixtures; a live-site end-to-end test was blocked by OpenReview's browser verification.
+
+5. 账号和发布
+
+开发者邮箱、真实身份、地址和交易商身份等账号资料，请填写你本人的真实信息；这些不由项目代码推断。
+Distribution 建议：免费、Public。地区按你的发布需求选择。
+资料包不等于已提交审核。本次未代你操作 Chrome Web Store 后台。
+
+参考（官方资料）：
+https://developer.chrome.com/docs/webstore/cws-dashboard-listing
+https://developer.chrome.com/docs/webstore/cws-dashboard-privacy
+https://developer.chrome.com/docs/webstore/program-policies/user-data-faq
+https://developer.chrome.com/docs/webstore/images
+https://developer.chrome.com/docs/webstore/best-practices
