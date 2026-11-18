@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "OpenReview Reviewer TOC",
+  "version": "1.1.0",
+  "description": "在 OpenReview 论文页面显示审稿人及每条讨论回复的目录，点击跳转到对应内容。",
+  "content_scripts": [
+    {
+      "matches": ["https://openreview.net/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
