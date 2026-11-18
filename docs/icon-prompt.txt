@@ -1,0 +1,5 @@
+Generated with the built-in image_gen tool, with transparent_background=true.
+Source: icon-source.png. PNG sizes exported with Sharp; 128px icon has 16px transparent padding.
+
+Prompt:
+Use case: logo-brand. Design ONE finished square Chrome extension app icon for OpenReview Reviewer TOC, a tool that navigates academic reviews and nested author/reviewer replies. Match the product's existing calm forest-green palette. A single deep forest green rounded-square badge, with a bold ivory and pale mint glyph combining a compact discussion tree and table of contents: one parent row and two short indented reply rows connected by a simple branch. Very few large geometric shapes, thick strokes, generous negative space, instantly readable at 16px. Refined flat vector-like graphic, crisp edges, no gradient, no shadows, no 3D, no text, no letters, no actual OpenReview logo, no mockup or presentation sheet. Center the badge within exactly the middle 75 percent of a 1024x1024 square canvas, leaving transparent padding on all four sides (128px per side). Outside the badge must be truly transparent. This is the final production icon, not a concept sheet.

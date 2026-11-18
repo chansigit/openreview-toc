@@ -3,6 +3,12 @@
   "name": "OpenReview Reviewer TOC",
   "version": "1.1.0",
   "description": "在 OpenReview 论文页面显示审稿人及每条讨论回复的目录，点击跳转到对应内容。",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://openreview.net/*"],
